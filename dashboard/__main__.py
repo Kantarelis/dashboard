@@ -43,9 +43,9 @@ def display_page(pathname):
     if pathname == "/":
         # ======================================= Clear Auto Generated Data ========================================
         # ==========================================================================================================
-        return init_page()
+        return init_page
     elif pathname == "/dashboard_main":
-        return dashboard_main()
+        return dashboard_main
     else:
         print("Pathname Error")
 

@@ -1,13 +1,35 @@
 import dash_bootstrap_components as dbc
 from dash import html
-from dashboard.interfaces.navbar import Navbar
+from dashboard.interfaces.navbar import navbar
+from dashboard.interfaces.containers.stock_figure import stock_figure
 
-# Load Navbar
-nav = Navbar()
 
 # Define Body of the page
 body = dbc.Container(
-    [],
+    [
+        dbc.Row(
+            [],
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [],
+                ),
+                dbc.Col(
+                    [
+                        html.Div(stock_figure),
+                    ],
+                    style={
+                        "display": "flex",
+                        "flex-flow": "column",
+                    },
+                ),
+            ],
+        ),
+        dbc.Row(
+            [],
+        ),
+    ],
     style={
         "display": "flex",
         "textAlign": "center",
@@ -21,20 +43,17 @@ body = dbc.Container(
 )
 
 
-# Create Homepage
-def dashboard_main():
-    layout = html.Div(
-        [nav, body],
-        id="home",
-        style={
-            "backgroundColor": "black",
-            "width": "100vw",
-            "height": "100vh",
-            "max-width": "100vw",
-            "max-height": "100vh",
-            "display": "flex",
-            "flex-flow": "column",
-        },
-    )
-
-    return layout
+# Create dashboard_main Div
+dashboard_main = html.Div(
+    [navbar, body],
+    id="home",
+    style={
+        "backgroundColor": "black",
+        "width": "100vw",
+        "height": "100vh",
+        "max-width": "100vw",
+        "max-height": "100vh",
+        "display": "flex",
+        "flex-flow": "column",
+    },
+)

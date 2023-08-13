@@ -1,9 +1,7 @@
 import dash_bootstrap_components as dbc
 from dash import html, dcc
-from dashboard.interfaces.navbar import Navbar
+from dashboard.interfaces.navbar import navbar
 
-# Load Navbar
-nav = Navbar()
 
 # Define Body of the page
 body = dbc.Container(
@@ -24,19 +22,16 @@ body = dbc.Container(
 
 
 # Create Homepage
-def init_page():
-    layout = html.Div(
-        [nav, body],
-        id="home",
-        style={
-            "backgroundColor": "black",
-            "width": "100vw",
-            "height": "100vh",
-            "max-width": "100vw",
-            "max-height": "100vh",
-            "display": "flex",
-            "flex-flow": "column",
-        },
-    )
-
-    return layout
+init_page = html.Div(
+    [navbar, body],
+    id="home",
+    style={
+        "backgroundColor": "black",
+        "width": "100vw",
+        "height": "100vh",
+        "max-width": "100vw",
+        "max-height": "100vh",
+        "display": "flex",
+        "flex-flow": "column",
+    },
+)
