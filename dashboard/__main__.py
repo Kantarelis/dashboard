@@ -5,9 +5,11 @@ from dash import html
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 from flask import Flask
+from dashboard.pyqt5_browser.browser import browser_app
 from dashboard.interfaces.init_page import init_page
 from dashboard.interfaces.dashboard_main import dashboard_main
 from dashboard.callbacks.utilities.init_page_clock import init_page_clock
+
 
 # ================================== Define relative root position =================================================
 root_path = os.getcwd()
@@ -68,5 +70,5 @@ init_page_clock(app)
 # ==================================================================================================================
 # ======================================== Server Initiation =======================================================
 # ==================================================================================================================
-# init_gui(server, argv=["", "--no-sandbox"])
-server.run()
+browser_app(server, argv=["", "--no-sandbox"])
+# server.run()

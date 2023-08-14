@@ -1,3 +1,5 @@
 dash==2.11.1
 dash-bootstrap-components==1.4.2
 dash-loading-spinners==1.0.0
+PyQt5==5.15.9
+PyQtWebEngine==5.15.6
