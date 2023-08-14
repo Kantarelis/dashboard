@@ -3,3 +3,4 @@ dash-bootstrap-components==1.4.2
 dash-loading-spinners==1.0.0
 PyQt5==5.15.9
 PyQtWebEngine==5.15.6
+finnhub-python==2.4.18
