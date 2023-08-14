@@ -1,6 +1,5 @@
-from dash import dcc
 import dash_loading_spinners as dls
-
+from dash import dcc
 
 stock_figure = dls.RingChase(
     dcc.Graph(

@@ -1,9 +1,9 @@
-import sys
-from PyQt5 import QtCore, QtWidgets, QtWebEngineWidgets
-from typing import Optional
 import socket
-from flask import Flask
+import sys
+from typing import List, Optional
 
+from dash import Dash
+from PyQt5 import QtCore, QtWebEngineWidgets, QtWidgets
 
 LOCAL_HOST: str = "localhost"
 SERVER_PORT: int = 0
@@ -19,9 +19,9 @@ class ApplicationThread(QtCore.QThread):
     ApplicationThread of QtCore.QThread.
     """
 
-    def __init__(self, application: Flask, port: int = DEFAULT_PORT):
+    def __init__(self, application: Dash, port: int = DEFAULT_PORT):
         super(ApplicationThread, self).__init__()
-        self.application: Flask = application
+        self.application: Dash = application
         self.port: int = port
 
     def __del__(self):
@@ -29,7 +29,7 @@ class ApplicationThread(QtCore.QThread):
 
     # Rewrite run method
     def run(self):
-        self.application.run(port=self.port, host=LOCAL_HOST, threaded=True)
+        self.application.run(port=f"{self.port}", host=LOCAL_HOST, threaded=True)
 
 
 class WebPage(QtWebEngineWidgets.QWebEnginePage):
@@ -50,24 +50,15 @@ def _exit_handler(server_thread: ApplicationThread):
     server_thread.terminate
 
 
-# Download Requests
-def _on_downloadRequested(file):
-    suggested_file = "plot.png"
-    path, _ = QtWidgets.QFileDialog.getSaveFileName(None, None, suggested_file)
-    if path:
-        file.setPath(path)
-        file.accept()
-
-
 def browser_app(
-    application: Flask,
+    application: Dash,
     port: int = SERVER_PORT,
     width: int = DEFAULT_WIDTH,
     height: int = DEFAULT_HEIGHT,
     min_width: int = DEFAULT_MINIMUM_WIDTH,
     min_height: int = DEFAULT_MINIMUM_HEIGHT,
     window_title: str = "Dashboard D&D",
-    argv: Optional[list] = None,
+    argv: Optional[List[str]] = None,
 ):
     """
     Init Dashboard GUI.
@@ -94,12 +85,9 @@ def browser_app(
     window.setMinimumHeight(min_height)
     window.setMinimumWidth(min_width)
     window.setWindowTitle(window_title)
-    # window.setWindowIcon(QtGui.QIcon(icon))
 
     # WebView Level
-    webView: QtWebEngineWidgets.QWebEngineView = QtWebEngineWidgets.QWebEngineView(
-        window
-    )
+    webView: QtWebEngineWidgets.QWebEngineView = QtWebEngineWidgets.QWebEngineView(window)
     window.setCentralWidget(webView)
 
     # WebPage Level
@@ -112,7 +100,7 @@ def browser_app(
     navtb: QtWidgets.QToolBar = QtWidgets.QToolBar()
 
     # adding this tool bar tot he main window
-    window.addToolBar(QtCore.Qt.BottomToolBarArea, navtb)
+    window.addToolBar(QtCore.Qt.ToolBarArea.BottomToolBarArea, navtb)
 
     # Reload action
     reload_btn: QtWidgets.QAction = QtWidgets.QAction("Unstuck", window)
@@ -123,14 +111,10 @@ def browser_app(
     reload_btn.triggered.connect(webView.reload)
     navtb.addAction(reload_btn)
 
-    navtb.setStyleSheet(
-        "background-color:rgb(70, 70, 70); font: bold 14px; color:white"
-    )
+    navtb.setStyleSheet("background-color:rgb(70, 70, 70); font: bold 14px; color:white")
 
     # adding a separator in the tool bar
     navtb.addSeparator()
-
-    webView.page().profile().downloadRequested.connect(_on_downloadRequested)
 
     window.showMaximized()
 

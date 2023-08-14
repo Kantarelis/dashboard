@@ -1,3 +1,6 @@
 .venv
 *.pyc
 __pycache__
+.vscode
+.mypy_cache
+workspace-requirements.txt

@@ -1,7 +1,7 @@
 import dash_bootstrap_components as dbc
-from dash import html, dcc
-from dashboard.interfaces.navbar import navbar
+from dash import dcc, html
 
+from dashboard.interfaces.navbar import navbar
 
 # Define Body of the page
 body = dbc.Container(
