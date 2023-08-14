@@ -46,8 +46,8 @@ class WebPage(QtWebEngineWidgets.QWebEnginePage):
 
 
 # Exit handler
-def _exit_handler(server_thread: ApplicationThread):
-    server_thread.terminate
+def _exit_handler():
+    pass
 
 
 def browser_app(
@@ -77,6 +77,7 @@ def browser_app(
     browser: QtWidgets.QApplication = QtWidgets.QApplication(argv)
     server_thread: ApplicationThread = ApplicationThread(application, port)
     server_thread.start()
+
     browser.aboutToQuit.connect(_exit_handler)
 
     # Main Window Level
