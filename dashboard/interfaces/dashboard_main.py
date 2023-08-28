@@ -1,10 +1,12 @@
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import dcc, html
 
+from dashboard.interfaces.containers.modals.add_stocks_modal import add_stocks_modal
+from dashboard.interfaces.containers.modals.remove_stocks_modal import remove_stocks_modal
 from dashboard.interfaces.containers.stock_figure import stock_figure
 from dashboard.interfaces.navbar import navbar
 
-# Define Body of the page
+# Body of the main page
 body = dbc.Container(
     [
         dbc.Row(
@@ -13,7 +15,44 @@ body = dbc.Container(
         dbc.Row(
             [
                 dbc.Col(
-                    [],
+                    [
+                        dbc.Row(
+                            [
+                                html.H4("Your Stocks:"),
+                                dbc.ListGroup(
+                                    [
+                                        dbc.Button("-", title="remove stocks", id="remove_stocks", n_clicks=0),
+                                        dbc.Button("+", title="add stocks", id="add_stocks", n_clicks=0),
+                                        html.Div(add_stocks_modal),
+                                        html.Div(remove_stocks_modal),
+                                    ],
+                                    horizontal=True,
+                                    style={
+                                        "display": "flex",
+                                        "flex-flow": "row",
+                                        "align-items": "center",
+                                    },
+                                ),
+                            ],
+                            style={
+                                "display": "flex",
+                                "flex-flow": "column",
+                                "align-items": "left",
+                            },
+                        ),
+                        dbc.Row(
+                            [
+                                html.Div(id="stocks_box"),
+                                dcc.Interval(id="refresh_stocks_box", interval=1 * 1000, n_intervals=0),
+                                # html.H4("TODO: Stocks Box"),
+                            ],
+                            style={
+                                "display": "flex",
+                                "flex-flow": "column",
+                                "align-items": "left",
+                            },
+                        ),
+                    ],
                 ),
                 dbc.Col(
                     [

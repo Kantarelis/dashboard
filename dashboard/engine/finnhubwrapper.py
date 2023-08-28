@@ -1,6 +1,8 @@
-import finnhub
 import datetime
-from dashboard.settings import SELECTED_COUNTRY, COMPANY_NEWS_DATE_FORMAT
+
+import finnhub
+
+from dashboard.settings import COMPANY_NEWS_DATE_FORMAT, SELECTED_COUNTRY
 
 
 class FinnhubWrapper:

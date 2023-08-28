@@ -4,3 +4,4 @@ __pycache__
 .vscode
 .mypy_cache
 workspace-requirements.txt
+dashboard/database/dashboard_database.db
