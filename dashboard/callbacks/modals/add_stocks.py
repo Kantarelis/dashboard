@@ -39,7 +39,7 @@ def body_of_add_stocks_modal(app):
             options=stocks,
             value=[],
             placeholder=["Stocks"],
-            style={"width": "7.2vw", "font-size": "90%", "color": "#222222"},
+            style={"width": "100%", "color": "black"},
             optionHeight=55,
             searchable=True,
         )
