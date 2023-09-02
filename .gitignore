@@ -5,3 +5,4 @@ __pycache__
 .mypy_cache
 workspace-requirements.txt
 dashboard/database/dashboard_database.db
+dashboard.egg-info

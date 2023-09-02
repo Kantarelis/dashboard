@@ -1,3 +1,5 @@
+import os
+
 from dash import html
 from dash.dependencies import Input, Output
 
@@ -40,7 +42,7 @@ def stocks_box(app, root_path, lock):
         # TODO: draw data from database
         saved_stocks = ["First", "Second", "Third", "This is a demo...", "fix in stocks_box.py"]
 
-        db_location = f"{root_path}/{DATABASE_PATH}"
+        db_location = os.path.join(root_path, DATABASE_PATH)
 
         print(db_location)
 

@@ -6,7 +6,7 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html
 from dash.dependencies import Input, Output
 
-from dashboard.callbacks.modals.add_stocks import add_stocks_modal
+from dashboard.callbacks.modals.add_stocks import add_stocks_modal, body_of_add_stocks_modal
 from dashboard.callbacks.modals.remove_stocks import remove_stocks_modal
 from dashboard.callbacks.objects.stocks_box import stocks_box
 from dashboard.callbacks.utilities.init_page_clock import init_page_clock
@@ -19,32 +19,24 @@ from dashboard.settings import DATABASE_PATH
 
 
 class Dashboard:
-    def __init__(self):
-        pass
-
-    def run(self):
-        # ================================== Define relative root position =============================================
-        root_path: str = os.getcwd()
-
-        # ================================== Create db file if not exists ==============================================
+    def __init__(self, app_title="Dashboard"):
+        self.app_title = app_title
+        self.app: dash.Dash = dash.Dash(external_stylesheets=[dbc.themes.DARKLY])
+        self.root_path: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
+        self.lock = Lock()
         create_connection(DATABASE_PATH)
 
-        # ============================== Define a global lock for io operations ========================================
-        lock = Lock()
-
+    def run(self):
         # ===================================== Create necessary paths =================================================
-        local_data_paths_constructor(root_path)
-
-        # ========================================= Define the app =====================================================
-        app: dash.Dash = dash.Dash(external_stylesheets=[dbc.themes.DARKLY])
+        local_data_paths_constructor(self.root_path)
 
         # ================================ Define the layout of the app ================================================
-        app.layout = html.Div(
+        self.app.layout = html.Div(
             [dcc.Location(id="url", refresh=False), html.Div(id="page-content")],
         )
 
         # =============================== Define the title of the application ==========================================
-        app.title = "Dashboard"
+        self.app.title = self.app_title
 
         # ==============================================================================================================
         # ==================================== Clearing Paths Callbacks ================================================
@@ -54,7 +46,7 @@ class Dashboard:
         # ==============================================================================================================
         # ==================================== Pages Navigation Callback ===============================================
         # ==============================================================================================================
-        @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
+        @self.app.callback(Output("page-content", "children"), [Input("url", "pathname")])
         def display_page(pathname: str):
             if pathname == "/":
                 # ======================================= Clear Auto Generated Data ====================================
@@ -68,18 +60,19 @@ class Dashboard:
         # ==============================================================================================================
         # ========================================= Utilities Callbacks ================================================
         # ==============================================================================================================
-        init_page_clock(app)
+        init_page_clock(self.app)
 
         # ========================================= Object Callbacks ===================================================
         # ==============================================================================================================
         # ==============================================================================================================
-        stocks_box(app, root_path, lock)
+        stocks_box(self.app, self.root_path, self.lock)
 
         # ========================================== Modal Callbacks ===================================================
         # ==============================================================================================================
         # ==============================================================================================================
-        add_stocks_modal(app)
-        remove_stocks_modal(app)
+        add_stocks_modal(self.app)
+        body_of_add_stocks_modal(self.app)
+        remove_stocks_modal(self.app)
 
         # ==============================================================================================================
         # =============================== User Inputs Dictionaries Callbacks ===========================================
@@ -89,4 +82,4 @@ class Dashboard:
         # ==============================================================================================================
         # ======================================== Server Initiation ===================================================
         # ==============================================================================================================
-        browser_app(app, argv=["", "--no-sandbox"])
+        browser_app(self.app, argv=["", "--no-sandbox"], window_title=self.app_title)
