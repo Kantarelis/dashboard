@@ -7,9 +7,12 @@ from dashboard.database.functions.generic import run_query
 from dashboard.settings import DATABASE_PATH
 
 CREATION_QUERY = """
-            CREATE TABLE IF NOT EXISTS saved_stocks
-            ([symbol] TEXT, [datetime] TEXT)
-            """
+                 CREATE TABLE IF NOT EXISTS saved_stocks
+                 ([pid] INTEGER PRIMARY KEY AUTOINCREMENT, [symbol] TEXT UNIQUE NOT NULL, [name] TEXT, [country] TEXT,
+                 [currency] TEXT, [estimateCurrency]  TEXT, [exchange] TEXT, [finnhubIndustry] TEXT, [ipo] TEXT,
+                 [logo] TEXT, [marketCapitalization] TEXT, [phone] TEXT, [shareOutstanding] TEXT, [ticker] TEXT,
+                 [weburl] TEXT)
+                 """
 
 
 GET_SAVED_STOCKS = """
@@ -38,19 +41,11 @@ def stocks_box(app, root_path, lock):
         [Input("refresh_stocks_box", "n_intervals")],
     )
     def stocks_box_def(n_interval):
-        print(n_interval)
-        # TODO: draw data from database
-        saved_stocks = ["First", "Second", "Third", "This is a demo...", "fix in stocks_box.py"]
-
         db_location = os.path.join(root_path, DATABASE_PATH)
-
-        print(db_location)
-
+        results = []
         with lock:
             run_query(CREATION_QUERY, db_location)
             results = run_query(GET_SAVED_STOCKS, db_location)
-
-        print(results)
-
+        saved_stocks = [result[0] for result in results]
         if n_interval is not None:
             return html.Ul([html.Li(stock_symbol) for stock_symbol in saved_stocks])

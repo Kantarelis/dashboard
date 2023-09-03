@@ -6,8 +6,13 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html
 from dash.dependencies import Input, Output
 
-from dashboard.callbacks.modals.add_stocks import add_stocks_modal, body_of_add_stocks_modal
-from dashboard.callbacks.modals.remove_stocks import remove_stocks_modal
+from dashboard.callbacks.modals.stocks_portfolio import (
+    add_stocks_to_database,
+    left_body_of_stocks_portfolio_modal,
+    remove_stocks_from_database,
+    right_body_of_stocks_portfolio_modal,
+    stocks_portfolio_modal,
+)
 from dashboard.callbacks.objects.stocks_box import stocks_box
 from dashboard.callbacks.utilities.init_page_clock import init_page_clock
 from dashboard.callbacks.utilities.local_data_paths_constructor import local_data_paths_constructor
@@ -70,9 +75,11 @@ class Dashboard:
         # ========================================== Modal Callbacks ===================================================
         # ==============================================================================================================
         # ==============================================================================================================
-        add_stocks_modal(self.app)
-        body_of_add_stocks_modal(self.app)
-        remove_stocks_modal(self.app)
+        stocks_portfolio_modal(self.app)
+        left_body_of_stocks_portfolio_modal(self.app, self.lock)
+        right_body_of_stocks_portfolio_modal(self.app)
+        add_stocks_to_database(self.app, self.lock)
+        remove_stocks_from_database(self.app, self.lock)
 
         # ==============================================================================================================
         # =============================== User Inputs Dictionaries Callbacks ===========================================

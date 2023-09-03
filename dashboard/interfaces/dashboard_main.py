@@ -1,8 +1,7 @@
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 
-from dashboard.interfaces.containers.modals.add_stocks_modal import add_stocks_modal
-from dashboard.interfaces.containers.modals.remove_stocks_modal import remove_stocks_modal
+from dashboard.interfaces.containers.modals.stocks_portfolio import stocks_portfolio
 from dashboard.interfaces.containers.stock_figure import stock_figure
 from dashboard.interfaces.navbar import navbar
 
@@ -21,10 +20,11 @@ body = dbc.Container(
                                 html.H4("Your Stocks:"),
                                 dbc.ListGroup(
                                     [
-                                        dbc.Button("-", title="remove stocks", id="remove_stocks", n_clicks=0),
-                                        dbc.Button("+", title="add stocks", id="add_stocks", n_clicks=0),
-                                        html.Div(add_stocks_modal),
-                                        html.Div(remove_stocks_modal),
+                                        dbc.Button("Portfolio", id="stocks_portfolio_button", n_clicks=0),
+                                        html.Div(stocks_portfolio),
+                                        dcc.Store(id="saved_stocks_add_list"),
+                                        dcc.Store(id="saved_stocks_remove_list")
+                                        # html.Div(id="add_stocks_to_database_dummy"),
                                     ],
                                     horizontal=True,
                                     style={
@@ -42,9 +42,9 @@ body = dbc.Container(
                         ),
                         dbc.Row(
                             [
+                                html.H4("Stocks Portfolio"),
                                 html.Div(id="stocks_box"),
                                 dcc.Interval(id="refresh_stocks_box", interval=1 * 1000, n_intervals=0),
-                                # html.H4("TODO: Stocks Box"),
                             ],
                             style={
                                 "display": "flex",
