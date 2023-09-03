@@ -1,4 +1,6 @@
 import os
+import sqlite3
+from sqlite3 import Error
 
 from dash import html
 from dash.dependencies import Input, Output
@@ -18,8 +20,6 @@ CREATION_QUERY = """
 GET_SAVED_STOCKS = """
                 SELECT symbol FROM saved_stocks
                 """
-import sqlite3
-from sqlite3 import Error
 
 
 def create_connection(db_file):
@@ -41,8 +41,8 @@ def stocks_box(app, root_path, lock):
         [Input("refresh_stocks_box", "n_intervals")],
     )
     def stocks_box_def(n_interval):
-        db_location = os.path.join(root_path, DATABASE_PATH)
-        results = []
+        db_location: str = os.path.join(root_path, DATABASE_PATH)
+        results: list = []
         with lock:
             run_query(CREATION_QUERY, db_location)
             results = run_query(GET_SAVED_STOCKS, db_location)

@@ -1,5 +1,9 @@
-from dash import callback_context, dcc, no_update
+from multiprocessing.synchronize import Lock as LockType
+from typing import Tuple
+
+from dash import Dash, callback_context, dcc
 from dash.dependencies import Input, Output, State
+from dash.exceptions import PreventUpdate
 
 from dashboard.database.functions.generic import run_query
 from dashboard.engine.finnhubwrapper import FinnhubWrapper
@@ -15,7 +19,7 @@ CREATION_QUERY = """
                  """
 
 
-def stocks_portfolio_modal(app):
+def stocks_portfolio_modal(app: Dash):
     @app.callback(
         Output("stocks_portfolio_modal", "is_open"),
         [
@@ -24,7 +28,7 @@ def stocks_portfolio_modal(app):
         ],
         State("stocks_portfolio_modal", "is_open"),
     )
-    def stocks_portfolio_modal_function(n_clicks_open, n_clicks_close, open_modal):
+    def stocks_portfolio_modal_function(n_clicks_open: int, n_clicks_close: int, open_modal: bool) -> bool:
         if (
             callback_context.triggered_id == "stocks_portfolio_button"
             or callback_context.triggered_id == "close_portfolio"
@@ -33,15 +37,15 @@ def stocks_portfolio_modal(app):
         return open_modal
 
 
-def right_body_of_stocks_portfolio_modal(app):
+def right_body_of_stocks_portfolio_modal(app: Dash):
     @app.callback(
         Output("all_stocks", "children"),
         [
             Input("stocks_portfolio_button", "n_clicks"),
         ],
     )
-    def right_body_of_stocks_portfolio_modal_function(n_clicks):
-        stocks = []
+    def right_body_of_stocks_portfolio_modal_function(n_clicks: int) -> dcc.Dropdown:
+        stocks: list = []
         if callback_context.triggered_id == "stocks_portfolio_button":
             fin = FinnhubWrapper(API_KEY)
             all_stocks = fin.stocks_to_list()
@@ -58,7 +62,7 @@ def right_body_of_stocks_portfolio_modal(app):
         )
 
 
-def left_body_of_stocks_portfolio_modal(app, lock):
+def left_body_of_stocks_portfolio_modal(app: Dash, lock: LockType):
     @app.callback(
         Output("saved_stocks", "children"),
         [
@@ -70,8 +74,12 @@ def left_body_of_stocks_portfolio_modal(app, lock):
         ],
     )
     def left_body_of_stocks_portfolio_modal_function(
-        n_clicks_portfolio, n_clicks_add_stocks, n_clicks_remove_stocks, saved_stocks_add_list, saved_stocks_remove_list
-    ):
+        n_clicks_portfolio: int,
+        n_clicks_add_stocks: int,
+        n_clicks_remove_stocks: int,
+        saved_stocks_add_list: list,
+        saved_stocks_remove_list: list,
+    ) -> dcc.Dropdown:
         results: list = []
         saved_stocks: list = []
         if callback_context.triggered_id == "stocks_portfolio_button":
@@ -99,7 +107,7 @@ def left_body_of_stocks_portfolio_modal(app, lock):
         )
 
 
-def add_stocks_to_database(app, lock):
+def add_stocks_to_database(app: Dash, lock: LockType):
     @app.callback(
         Output("all_stocks_dropdown", "value"),
         Output("saved_stocks_add_list", "value"),
@@ -109,7 +117,7 @@ def add_stocks_to_database(app, lock):
         ],
         prevent_initial_call=True,
     )
-    def add_stocks_to_database_function(n_clicks, selected_stocks):
+    def add_stocks_to_database_function(n_clicks: int, selected_stocks: list) -> Tuple[list, list]:
         results: list = []
         saved_stocks: list = []
 
@@ -144,13 +152,13 @@ def add_stocks_to_database(app, lock):
                 saved_stocks = [result[0] for result in results]
 
             # Restart Selected stocks values
-            selected_stocks = []
+            selected_stocks.clear()
 
             return selected_stocks, saved_stocks
-        return no_update, no_update
+        raise PreventUpdate
 
 
-def remove_stocks_from_database(app, lock):
+def remove_stocks_from_database(app: Dash, lock: LockType):
     @app.callback(
         Output("saved_stocks_dropdown", "value"),
         Output("saved_stocks_remove_list", "value"),
@@ -160,7 +168,7 @@ def remove_stocks_from_database(app, lock):
         ],
         prevent_initial_call=True,
     )
-    def remove_stocks_from_database_function(n_clicks, selected_stocks):
+    def remove_stocks_from_database_function(n_clicks: int, selected_stocks: list) -> Tuple[list, list]:
         # Restart Selected stocks values
         results: list = []
         saved_stocks: list = []
@@ -181,7 +189,7 @@ def remove_stocks_from_database(app, lock):
                 saved_stocks = [result[0] for result in results]
 
             # Restart Selected stocks values
-            selected_stocks = []
+            selected_stocks.clear()
 
             return selected_stocks, saved_stocks
-        return no_update, no_update
+        raise PreventUpdate

@@ -1,5 +1,6 @@
 import os
 from multiprocessing import Lock
+from multiprocessing.synchronize import Lock as LockType
 
 import dash
 import dash_bootstrap_components as dbc
@@ -28,7 +29,7 @@ class Dashboard:
         self.app_title = app_title
         self.app: dash.Dash = dash.Dash(external_stylesheets=[dbc.themes.DARKLY])
         self.root_path: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
-        self.lock = Lock()
+        self.lock: LockType = Lock()
         create_connection(DATABASE_PATH)
 
     def run(self):

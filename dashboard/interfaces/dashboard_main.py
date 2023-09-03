@@ -18,26 +18,26 @@ body = dbc.Container(
                         dbc.Row(
                             [
                                 html.H4("Your Stocks:"),
-                                dbc.ListGroup(
-                                    [
-                                        dbc.Button("Portfolio", id="stocks_portfolio_button", n_clicks=0),
-                                        html.Div(stocks_portfolio),
-                                        dcc.Store(id="saved_stocks_add_list"),
-                                        dcc.Store(id="saved_stocks_remove_list")
-                                        # html.Div(id="add_stocks_to_database_dummy"),
-                                    ],
-                                    horizontal=True,
+                                dbc.Button(
+                                    "Portfolio",
+                                    id="stocks_portfolio_button",
+                                    n_clicks=0,
                                     style={
                                         "display": "flex",
                                         "flex-flow": "row",
                                         "align-items": "center",
+                                        "width": "auto",
                                     },
                                 ),
+                                html.Div(stocks_portfolio),
+                                dcc.Store(id="saved_stocks_add_list"),
+                                dcc.Store(id="saved_stocks_remove_list"),
                             ],
                             style={
                                 "display": "flex",
                                 "flex-flow": "column",
-                                "align-items": "left",
+                                "align-items": "center",
+                                "justify-content": "center",
                             },
                         ),
                         dbc.Row(
@@ -49,10 +49,15 @@ body = dbc.Container(
                             style={
                                 "display": "flex",
                                 "flex-flow": "column",
-                                "align-items": "left",
+                                "align-items": "center",
+                                "justify-content": "center",
                             },
                         ),
                     ],
+                    style={
+                        "display": "flex",
+                        "flex-flow": "column",
+                    },
                 ),
                 dbc.Col(
                     [

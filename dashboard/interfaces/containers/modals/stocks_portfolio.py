@@ -31,7 +31,8 @@ stocks_portfolio = dbc.Modal(
                                     ),
                                 ]
                             ),
-                        ]
+                        ],
+                        style={"display": "flex", "flex-flow": "column"},
                     ),
                     dbc.Col(
                         [
