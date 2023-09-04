@@ -1,4 +1,5 @@
 import datetime
+from typing import Union
 
 import finnhub
 
@@ -12,7 +13,12 @@ class FinnhubWrapper:
     def to_timestamp_integer(self, dt: datetime.datetime) -> int:
         return int(dt.timestamp())
 
-    def stock_candles(self, stock: str, tw: str, start_date: datetime.datetime, end_date: datetime.datetime) -> dict:
+    def to_datetime(self, timestamp: int) -> datetime.datetime:
+        return datetime.datetime.fromtimestamp(timestamp)
+
+    def stock_candles(
+        self, stock: str, tw: Union[int, str], start_date: datetime.datetime, end_date: datetime.datetime
+    ) -> dict:
         start_date_int = self.to_timestamp_integer(start_date)
         end_date_int = self.to_timestamp_integer(end_date)
         return self.finnhub_client.stock_candles(stock, tw, start_date_int, end_date_int)

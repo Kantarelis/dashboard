@@ -1,7 +1,6 @@
 import os
-import sqlite3
-from sqlite3 import Error
 
+import dash_bootstrap_components as dbc
 from dash import html
 from dash.dependencies import Input, Output
 
@@ -22,19 +21,6 @@ GET_SAVED_STOCKS = """
                 """
 
 
-def create_connection(db_file):
-    """create a database connection to a SQLite database"""
-    conn = None
-    try:
-        conn = sqlite3.connect(db_file)
-        print(sqlite3.version)
-    except Error as e:
-        print(e)
-    finally:
-        if conn:
-            conn.close()
-
-
 def stocks_box(app, root_path, lock):
     @app.callback(
         Output("stocks_box", "children"),
@@ -48,4 +34,10 @@ def stocks_box(app, root_path, lock):
             results = run_query(GET_SAVED_STOCKS, db_location)
         saved_stocks = [result[0] for result in results]
         if n_interval is not None:
-            return html.Ul([html.Li(stock_symbol) for stock_symbol in saved_stocks])
+            return html.Div(
+                [
+                    dbc.Button([stock_symbol], id=f"stock:{stock_symbol}", size="sm", color="secondary")
+                    for stock_symbol in saved_stocks
+                ],
+                style={"display": "flex", "flex-flow": "column"},
+            )

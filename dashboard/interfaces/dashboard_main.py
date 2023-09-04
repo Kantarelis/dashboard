@@ -43,7 +43,13 @@ body = dbc.Container(
                         dbc.Row(
                             [
                                 html.H4("Stocks Portfolio"),
-                                html.Div(id="stocks_box"),
+                                html.Div(
+                                    id="stocks_box",
+                                    style={
+                                        "display": "flex",
+                                        "flex-flow": "column",
+                                    },
+                                ),
                                 dcc.Interval(id="refresh_stocks_box", interval=1 * 1000, n_intervals=0),
                             ],
                             style={
