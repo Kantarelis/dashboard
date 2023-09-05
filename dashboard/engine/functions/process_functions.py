@@ -1,6 +1,6 @@
 import os
-from typing import Optional
 from signal import SIGTERM
+from typing import Optional
 
 
 def is_pid_alive(pid: int) -> bool:

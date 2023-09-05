@@ -6,7 +6,6 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 from dash.dependencies import Input, Output
-from dashboard.engine.stocks_data_feed import StocksDataFeed
 
 from dashboard.callbacks.modals.stocks_portfolio import (
     add_stocks_to_database,
@@ -19,6 +18,7 @@ from dashboard.callbacks.objects.stocks_box import stocks_box
 from dashboard.callbacks.utilities.init_page_clock import init_page_clock
 from dashboard.callbacks.utilities.local_data_paths_constructor import local_data_paths_constructor
 from dashboard.database.functions.generic import create_connection
+from dashboard.engine.stocks_data_feed import StocksDataFeed
 from dashboard.interfaces.dashboard_main import dashboard_main
 from dashboard.interfaces.init_page import init_page
 from dashboard.pyqt5_browser.browser import BrowserApp

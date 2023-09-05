@@ -5,6 +5,7 @@ from typing import List, Optional
 from dash import Dash
 from PyQt5 import QtCore, QtWebEngineWidgets, QtWidgets
 
+from dashboard.engine.functions.process_functions import terminate_process
 from dashboard.pyqt5_browser.settings import (
     DEFAULT_HEIGHT,
     DEFAULT_MINIMUM_HEIGHT,
@@ -14,7 +15,6 @@ from dashboard.pyqt5_browser.settings import (
     LOCAL_HOST,
     SERVER_PORT,
 )
-from dashboard.engine.functions.process_functions import terminate_process
 
 
 class ApplicationThread(QtCore.QThread):

@@ -1,9 +1,10 @@
 import datetime
+from multiprocessing import Process
+from multiprocessing.synchronize import Lock as LockType
+
 from dashboard.database.functions.generic import run_query
 from dashboard.engine.finnhubwrapper import FinnhubWrapper
 from dashboard.settings import API_KEY, DATA_FEED_WINDOW, DATABASE_PATH, TIME_WINDOW
-from multiprocessing import Process
-from multiprocessing.synchronize import Lock as LockType
 
 CREATION_QUERY = """
                  CREATE TABLE IF NOT EXISTS saved_stocks
