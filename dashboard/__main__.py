@@ -6,6 +6,7 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 from dash.dependencies import Input, Output
+from dashboard.engine.stocks_data_feed import StocksDataFeed
 
 from dashboard.callbacks.modals.stocks_portfolio import (
     add_stocks_to_database,
@@ -20,7 +21,7 @@ from dashboard.callbacks.utilities.local_data_paths_constructor import local_dat
 from dashboard.database.functions.generic import create_connection
 from dashboard.interfaces.dashboard_main import dashboard_main
 from dashboard.interfaces.init_page import init_page
-from dashboard.pyqt5_browser.browser import browser_app
+from dashboard.pyqt5_browser.browser import BrowserApp
 from dashboard.settings import DATABASE_PATH
 
 
@@ -33,6 +34,11 @@ class Dashboard:
         create_connection(DATABASE_PATH)
 
     def run(self):
+        # ===================================== Start Main Engine ======================================================
+        stocks_data_feed_engine = StocksDataFeed(self.lock)
+        stocks_data_feed_engine.start()
+        datafeed_pid = stocks_data_feed_engine.pid
+
         # ===================================== Create necessary paths =================================================
         local_data_paths_constructor(self.root_path)
 
@@ -90,4 +96,6 @@ class Dashboard:
         # ==============================================================================================================
         # ======================================== Server Initiation ===================================================
         # ==============================================================================================================
-        browser_app(self.app, argv=["", "--no-sandbox"], window_title=self.app_title)
+        # browser_app(self.app, datafeed_pid, argv=["", "--no-sandbox"], window_title=self.app_title)
+        browser = BrowserApp(datafeed_pid, argv=["", "--no-sandbox"], window_title=self.app_title)
+        browser.run(self.app)

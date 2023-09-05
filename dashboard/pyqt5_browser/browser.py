@@ -14,6 +14,7 @@ from dashboard.pyqt5_browser.settings import (
     LOCAL_HOST,
     SERVER_PORT,
 )
+from dashboard.engine.functions.process_functions import terminate_process
 
 
 class ApplicationThread(QtCore.QThread):
@@ -47,78 +48,91 @@ class WebPage(QtWebEngineWidgets.QWebEnginePage):
         self.load(QtCore.QUrl(self.root_url))
 
 
-# Exit handler
-def _exit_handler():
-    pass
+class BrowserApp:
+    server_thread: ApplicationThread
 
+    def __init__(
+        self,
+        datafeed_pid: Optional[int],
+        port: int = SERVER_PORT,
+        width: int = DEFAULT_WIDTH,
+        height: int = DEFAULT_HEIGHT,
+        min_width: int = DEFAULT_MINIMUM_WIDTH,
+        min_height: int = DEFAULT_MINIMUM_HEIGHT,
+        window_title: str = "Dashboard D&D",
+        argv: Optional[List[str]] = None,
+    ):
+        self.datafeed_pid = datafeed_pid
+        self.port = port
+        self.width = width
+        self.height = height
+        self.min_width = min_width
+        self.min_height = min_height
+        self.window_title = window_title
+        self.argv = argv
 
-def browser_app(
-    application: Dash,
-    port: int = SERVER_PORT,
-    width: int = DEFAULT_WIDTH,
-    height: int = DEFAULT_HEIGHT,
-    min_width: int = DEFAULT_MINIMUM_WIDTH,
-    min_height: int = DEFAULT_MINIMUM_HEIGHT,
-    window_title: str = "Dashboard D&D",
-    argv: Optional[List[str]] = None,
-):
-    """
-    Init Dashboard GUI.
-    """
-    if argv is None:
-        argv = sys.argv
+    def _exit_handler(self):
+        terminate_process(self.datafeed_pid)
+        self.server_thread.terminate
 
-    # if port set to 0 grab dynamically a random free port
-    if port == 0:
-        sock: socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.bind((LOCAL_HOST, 0))
-        port = sock.getsockname()[1]
-        sock.close()
+    def run(self, application: Dash):
+        """
+        Init Dashboard GUI.
+        """
+        if self.argv is None:
+            self.argv = sys.argv
 
-    # Application Level
-    browser: QtWidgets.QApplication = QtWidgets.QApplication(argv)
-    server_thread: ApplicationThread = ApplicationThread(application, port)
-    server_thread.start()
+        # if port set to 0 grab dynamically a random free port
+        if self.port == 0:
+            sock: socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.bind((LOCAL_HOST, 0))
+            self.port = sock.getsockname()[1]
+            sock.close()
 
-    browser.aboutToQuit.connect(_exit_handler)
+        # Application Level
+        browser: QtWidgets.QApplication = QtWidgets.QApplication(self.argv)
+        self.server_thread = ApplicationThread(application, self.port)
+        self.server_thread.start()
 
-    # Main Window Level
-    window: QtWidgets.QMainWindow = QtWidgets.QMainWindow()
-    window.resize(width, height)
-    window.setMinimumHeight(min_height)
-    window.setMinimumWidth(min_width)
-    window.setWindowTitle(window_title)
+        browser.aboutToQuit.connect(self._exit_handler)
 
-    # WebView Level
-    webView: QtWebEngineWidgets.QWebEngineView = QtWebEngineWidgets.QWebEngineView(window)
-    window.setCentralWidget(webView)
+        # Main Window Level
+        window: QtWidgets.QMainWindow = QtWidgets.QMainWindow()
+        window.resize(self.width, self.height)
+        window.setMinimumHeight(self.min_height)
+        window.setMinimumWidth(self.min_width)
+        window.setWindowTitle(self.window_title)
 
-    # WebPage Level
-    page: WebPage = WebPage(f"http://{LOCAL_HOST}:{port}")
-    page.home()
-    webView.setPage(page)
+        # WebView Level
+        webView: QtWebEngineWidgets.QWebEngineView = QtWebEngineWidgets.QWebEngineView(window)
+        window.setCentralWidget(webView)
 
-    # --------- ToolBar ----------
-    # creating QToolBar for navigation
-    navtb: QtWidgets.QToolBar = QtWidgets.QToolBar()
+        # WebPage Level
+        page: WebPage = WebPage(f"http://{LOCAL_HOST}:{self.port}")
+        page.home()
+        webView.setPage(page)
 
-    # adding this tool bar tot he main window
-    window.addToolBar(QtCore.Qt.ToolBarArea.BottomToolBarArea, navtb)
+        # --------- ToolBar ----------
+        # creating QToolBar for navigation
+        navtb: QtWidgets.QToolBar = QtWidgets.QToolBar()
 
-    # Reload action
-    reload_btn: QtWidgets.QAction = QtWidgets.QAction("Unstuck", window)
-    reload_btn.setStatusTip("Reload page")
+        # adding this tool bar tot he main window
+        window.addToolBar(QtCore.Qt.ToolBarArea.BottomToolBarArea, navtb)
 
-    # adding action to the reload button
-    # making browser to reload
-    reload_btn.triggered.connect(webView.reload)
-    navtb.addAction(reload_btn)
+        # Reload action
+        reload_btn: QtWidgets.QAction = QtWidgets.QAction("Unstuck", window)
+        reload_btn.setStatusTip("Reload page")
 
-    navtb.setStyleSheet("background-color:rgb(70, 70, 70); font: bold 14px; color:white")
+        # adding action to the reload button
+        # making browser to reload
+        reload_btn.triggered.connect(webView.reload)
+        navtb.addAction(reload_btn)
 
-    # adding a separator in the tool bar
-    navtb.addSeparator()
+        navtb.setStyleSheet("background-color:rgb(70, 70, 70); font: bold 14px; color:white")
 
-    window.showMaximized()
+        # adding a separator in the tool bar
+        navtb.addSeparator()
 
-    return browser.exec_()
+        window.showMaximized()
+
+        return browser.exec_()

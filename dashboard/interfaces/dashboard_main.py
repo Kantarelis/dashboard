@@ -79,6 +79,7 @@ body = dbc.Container(
         dbc.Row(
             [],
         ),
+        dcc.Store(id="main_engine_process_pid"),
     ],
     style={
         "display": "flex",
