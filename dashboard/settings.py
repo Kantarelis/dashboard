@@ -7,5 +7,5 @@ COMPANY_NEWS_DATE_FORMAT = "%Y-%m-%d"
 DATABASE_PATH = "dashboard/database/dashboard_database.db"
 
 # Settings for stocks data feed
-TIME_WINDOW = 1  # Days
-DATA_FEED_WINDOW = 365  # Days
+TIME_INTERVAL = 1  # Days
+DATA_FEED_WINDOW = 5  # Days

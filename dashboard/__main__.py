@@ -3,6 +3,7 @@ from multiprocessing import Lock
 from multiprocessing.synchronize import Lock as LockType
 
 import dash
+import logging
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 from dash.dependencies import Input, Output
@@ -17,6 +18,7 @@ from dashboard.callbacks.modals.stocks_portfolio import (
 from dashboard.callbacks.objects.stocks_box import stocks_box
 from dashboard.callbacks.utilities.init_page_clock import init_page_clock
 from dashboard.callbacks.utilities.local_data_paths_constructor import local_data_paths_constructor
+from dashboard.callbacks.figures.main_plot import stock_candles_plot
 from dashboard.database.functions.generic import create_connection
 from dashboard.engine.stocks_data_feed import StocksDataFeed
 from dashboard.interfaces.dashboard_main import dashboard_main
@@ -51,23 +53,22 @@ class Dashboard:
         self.app.title = self.app_title
 
         # ==============================================================================================================
-        # ==================================== Clearing Paths Callbacks ================================================
-        # ==============================================================================================================
-        # clearing_paths_callbacks(app, root_path)
-
-        # ==============================================================================================================
         # ==================================== Pages Navigation Callback ===============================================
         # ==============================================================================================================
         @self.app.callback(Output("page-content", "children"), [Input("url", "pathname")])
         def display_page(pathname: str):
+            logging.debug(f"The pathname is changes into: {pathname}.")
             if pathname == "/":
                 # ======================================= Clear Auto Generated Data ====================================
                 # ======================================================================================================
+                logging.debug(f"The pathname '{pathname}' is matched with a server-page.")
                 return init_page
             elif pathname == "/dashboard_main":
+                logging.debug(f"The pathname '{pathname}' is matched with a server-page.")
                 return dashboard_main
             else:
-                print("Pathname Error")
+                logging.error("Pathname Error")
+                raise Exception("Pathname Error")
 
         # ==============================================================================================================
         # ========================================= Utilities Callbacks ================================================
@@ -87,11 +88,7 @@ class Dashboard:
         right_body_of_stocks_portfolio_modal(self.app)
         add_stocks_to_database(self.app, self.lock)
         remove_stocks_from_database(self.app, self.lock)
-
-        # ==============================================================================================================
-        # =============================== User Inputs Dictionaries Callbacks ===========================================
-        # ==============================================================================================================
-        # user_settings_callbacks(app, root_path)
+        stock_candles_plot(self.app, self.root_path, self.lock)
 
         # ==============================================================================================================
         # ======================================== Server Initiation ===================================================

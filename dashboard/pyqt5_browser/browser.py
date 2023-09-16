@@ -53,7 +53,7 @@ class BrowserApp:
 
     def __init__(
         self,
-        datafeed_pid: Optional[int],
+        process_pid: Optional[int],
         port: int = SERVER_PORT,
         width: int = DEFAULT_WIDTH,
         height: int = DEFAULT_HEIGHT,
@@ -62,7 +62,7 @@ class BrowserApp:
         window_title: str = "Dashboard D&D",
         argv: Optional[List[str]] = None,
     ):
-        self.datafeed_pid = datafeed_pid
+        self.process_pid = process_pid
         self.port = port
         self.width = width
         self.height = height
@@ -72,7 +72,7 @@ class BrowserApp:
         self.argv = argv
 
     def _exit_handler(self):
-        terminate_process(self.datafeed_pid)
+        terminate_process(self.process_pid)
         self.server_thread.terminate
 
     def run(self, application: Dash):

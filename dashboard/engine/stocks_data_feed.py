@@ -4,7 +4,7 @@ from multiprocessing.synchronize import Lock as LockType
 
 from dashboard.database.functions.generic import run_query
 from dashboard.engine.finnhubwrapper import FinnhubWrapper
-from dashboard.settings import API_KEY, DATA_FEED_WINDOW, DATABASE_PATH, TIME_WINDOW
+from dashboard.settings import API_KEY, DATA_FEED_WINDOW, DATABASE_PATH, TIME_INTERVAL
 
 CREATION_QUERY = """
                  CREATE TABLE IF NOT EXISTS saved_stocks
@@ -33,11 +33,11 @@ class StocksDataFeed(Process):
     def run(self):
         fin = FinnhubWrapper(API_KEY)
 
-        start_date = datetime.datetime.now() - datetime.timedelta(days=DATA_FEED_WINDOW)
-        end_date = datetime.datetime.now()
-
         loop = True
         while loop:
+            start_date = datetime.datetime.now() - datetime.timedelta(days=DATA_FEED_WINDOW)
+            end_date = datetime.datetime.now()
+
             with self.lock:
                 run_query(CREATION_QUERY, DATABASE_PATH)
                 results = run_query(SELECT_SAVED_STOCKS, DATABASE_PATH)
@@ -49,7 +49,7 @@ class StocksDataFeed(Process):
             for stock, pid in zip(stocks, pids):
                 dummy_integer += 1
                 print(f"Process running: {dummy_integer}")
-                stock_candle = fin.stock_candles(stock, TIME_WINDOW, start_date, end_date)
+                stock_candle = fin.stock_candles(stock, TIME_INTERVAL, start_date, end_date)
                 if stock_candle["s"] == "ok":
                     for record in range(len(stock_candle["c"])):
                         stock_data = (
@@ -64,6 +64,16 @@ class StocksDataFeed(Process):
                                     VALUES {stock_data}
                                     ON CONFLICT (timestamp) DO NOTHING;
                                     """
+
                         with self.lock:
                             run_query(CREATION_STOCKS_DATA_FEED_QUERY, DATABASE_PATH)
                             results = run_query(insert_stock_data_feed, DATABASE_PATH)
+
+                    start_date_to_string = int(start_date.timestamp())
+                    delete_out_dated_data_feed = f"""
+                                DELETE FROM stocks_data_feed
+                                WHERE timestamp < {start_date_to_string};
+                                """
+                    with self.lock:
+                        run_query(CREATION_STOCKS_DATA_FEED_QUERY, DATABASE_PATH)
+                        results = run_query(delete_out_dated_data_feed, DATABASE_PATH)

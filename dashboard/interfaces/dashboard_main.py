@@ -50,7 +50,7 @@ body = dbc.Container(
                                         "flex-flow": "column",
                                     },
                                 ),
-                                dcc.Interval(id="refresh_stocks_box", interval=1 * 1000, n_intervals=0),
+                                # dcc.Interval(id="refresh_stocks_box", interval=1 * 1000, n_intervals=0),
                             ],
                             style={
                                 "display": "flex",
@@ -68,6 +68,8 @@ body = dbc.Container(
                 dbc.Col(
                     [
                         html.Div(stock_figure),
+                        dcc.Store(id="last_stock_selected"),
+                        dcc.Interval(id="refresh_figure", interval=3 * 1000, n_intervals=0),
                     ],
                     style={
                         "display": "flex",

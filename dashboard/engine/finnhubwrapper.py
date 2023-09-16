@@ -17,11 +17,11 @@ class FinnhubWrapper:
         return datetime.datetime.fromtimestamp(timestamp)
 
     def stock_candles(
-        self, stock: str, tw: Union[int, str], start_date: datetime.datetime, end_date: datetime.datetime
+        self, stock: str, time_interval: Union[int, str], start_date: datetime.datetime, end_date: datetime.datetime
     ) -> dict:
         start_date_int = self.to_timestamp_integer(start_date)
         end_date_int = self.to_timestamp_integer(end_date)
-        return self.finnhub_client.stock_candles(stock, tw, start_date_int, end_date_int)
+        return self.finnhub_client.stock_candles(stock, time_interval, start_date_int, end_date_int)
 
     def company_news(self, stock: str, start_date: datetime.datetime, end_date: datetime.datetime) -> dict:
         start_date_str = start_date.strftime(COMPANY_NEWS_DATE_FORMAT)
