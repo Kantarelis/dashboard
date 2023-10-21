@@ -2,10 +2,8 @@ import dash_bootstrap_components as dbc
 import dash_extensions as de
 from dash import dcc, html
 
-
 from dashboard.interfaces.navbar import navbar
 from dashboard.settings import N_INTEGRALS_IN_INIT_PAGE, TIME_INTEGRAL_OF_IN_INIT_PAGE, URL_ANIMATION
-
 
 # Define Body of the page
 body = dbc.Container(
