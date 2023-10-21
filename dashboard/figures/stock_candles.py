@@ -1,9 +1,11 @@
-import os
 import datetime
+import os
+from multiprocessing.synchronize import Lock as LockType
+
 import plotly.graph_objects as go
+
 from dashboard.database.functions.generic import run_query
 from dashboard.settings import DATABASE_PATH
-
 
 CREATION_STOCKS_DATA_FEED_QUERY = """
                  CREATE TABLE IF NOT EXISTS stocks_data_feed
@@ -12,7 +14,7 @@ CREATION_STOCKS_DATA_FEED_QUERY = """
                  """
 
 
-def stock_candles_figure(root_path: str, lock, stock_symbol: str):
+def stock_candles_figure(root_path: str, lock: LockType, stock_symbol: str):
     get_candle_stock_data = f"""
                 SELECT timestamp, open, high, low, close
                 FROM stocks_data_feed

@@ -1,1 +1,1 @@
-from dashboard.__main__ import Dashboard
+from dashboard.run import Dashboard

@@ -26,6 +26,8 @@ SELECT_SAVED_STOCKS = """
 
 
 class StocksDataFeed(Process):
+    loop: bool
+
     def __init__(self, lock: LockType, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.lock = lock
@@ -33,8 +35,8 @@ class StocksDataFeed(Process):
     def run(self):
         fin = FinnhubWrapper(API_KEY)
 
-        loop = True
-        while loop:
+        self.loop = True
+        while self.loop:
             start_date = datetime.datetime.now() - datetime.timedelta(days=DATA_FEED_WINDOW)
             end_date = datetime.datetime.now()
 
@@ -67,7 +69,7 @@ class StocksDataFeed(Process):
 
                         with self.lock:
                             run_query(CREATION_STOCKS_DATA_FEED_QUERY, DATABASE_PATH)
-                            results = run_query(insert_stock_data_feed, DATABASE_PATH)
+                            run_query(insert_stock_data_feed, DATABASE_PATH)
 
                     start_date_to_string = int(start_date.timestamp())
                     delete_out_dated_data_feed = f"""
@@ -76,4 +78,4 @@ class StocksDataFeed(Process):
                                 """
                     with self.lock:
                         run_query(CREATION_STOCKS_DATA_FEED_QUERY, DATABASE_PATH)
-                        results = run_query(delete_out_dated_data_feed, DATABASE_PATH)
+                        run_query(delete_out_dated_data_feed, DATABASE_PATH)

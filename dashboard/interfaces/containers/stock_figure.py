@@ -2,7 +2,7 @@ from dash import dcc
 
 stock_figure = dcc.Graph(
     id="stock_candle_plot",
-    animate=True,
+    animate=False,
     style={
         "width": "65vw",
         "height": "60vh",

@@ -8,4 +8,5 @@ DATABASE_PATH = "dashboard/database/dashboard_database.db"
 
 # Settings for stocks data feed
 TIME_INTERVAL = 1  # Days
-DATA_FEED_WINDOW = 5  # Days
+DATA_FEED_WINDOW = 1  # Days
+MAIN_GRAPH_REFRESH_RATE = 5000  # Milliseconds

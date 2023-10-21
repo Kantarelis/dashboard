@@ -1,13 +1,14 @@
+import logging
 import os
 from multiprocessing import Lock
 from multiprocessing.synchronize import Lock as LockType
 
 import dash
-import logging
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 from dash.dependencies import Input, Output
 
+from dashboard.callbacks.figures.main_plot import stock_candles_plot
 from dashboard.callbacks.modals.stocks_portfolio import (
     add_stocks_to_database,
     left_body_of_stocks_portfolio_modal,
@@ -18,7 +19,6 @@ from dashboard.callbacks.modals.stocks_portfolio import (
 from dashboard.callbacks.objects.stocks_box import stocks_box
 from dashboard.callbacks.utilities.init_page_clock import init_page_clock
 from dashboard.callbacks.utilities.local_data_paths_constructor import local_data_paths_constructor
-from dashboard.callbacks.figures.main_plot import stock_candles_plot
 from dashboard.database.functions.generic import create_connection
 from dashboard.engine.stocks_data_feed import StocksDataFeed
 from dashboard.interfaces.dashboard_main import dashboard_main
@@ -28,7 +28,7 @@ from dashboard.settings import DATABASE_PATH
 
 
 class Dashboard:
-    def __init__(self, app_title="Dashboard"):
+    def __init__(self, app_title: str = "Dashboard"):
         self.app_title = app_title
         self.app: dash.Dash = dash.Dash(external_stylesheets=[dbc.themes.DARKLY])
         self.root_path: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
@@ -93,6 +93,5 @@ class Dashboard:
         # ==============================================================================================================
         # ======================================== Server Initiation ===================================================
         # ==============================================================================================================
-        # browser_app(self.app, datafeed_pid, argv=["", "--no-sandbox"], window_title=self.app_title)
         browser = BrowserApp(datafeed_pid, argv=["", "--no-sandbox"], window_title=self.app_title)
         browser.run(self.app)

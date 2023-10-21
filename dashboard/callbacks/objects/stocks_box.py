@@ -4,7 +4,6 @@ import dash_bootstrap_components as dbc
 from dash import html
 from dash.dependencies import Input, Output
 
-
 from dashboard.database.functions.generic import run_query
 from dashboard.settings import DATABASE_PATH
 
