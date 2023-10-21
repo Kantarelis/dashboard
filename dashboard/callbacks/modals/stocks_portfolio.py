@@ -1,5 +1,5 @@
 from multiprocessing.synchronize import Lock as LockType
-from typing import Tuple, List
+from typing import List, Tuple
 
 from dash import Dash, callback_context, dcc
 from dash.dependencies import Input, Output, State

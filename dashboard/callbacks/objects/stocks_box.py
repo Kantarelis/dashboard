@@ -1,7 +1,8 @@
 import os
+from multiprocessing.synchronize import Lock as LockType
 
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import Dash, html
 from dash.dependencies import Input, Output
 
 from dashboard.database.functions.generic import run_query
@@ -21,12 +22,13 @@ GET_SAVED_STOCKS = """
                 """
 
 
-def stocks_box(app, root_path, lock):
+def stocks_box(app: Dash, root_path: str, lock: LockType):
     @app.callback(
         Output("stocks_box", "children"),
         Input("stocks_portfolio_modal", "is_open"),
     )
-    def stocks_box_def(is_modal_open: bool):
+    def stocks_box_def(is_modal_open: bool) -> html.Div:
+        """Callback function that creates a list of buttons with saved stocks."""
         db_location: str = os.path.abspath(os.path.join(root_path, DATABASE_PATH))
         results: list = []
         with lock:
@@ -46,3 +48,4 @@ def stocks_box(app, root_path, lock):
                 ],
                 style={"display": "flex", "flex-flow": "column"},
             )
+        return html.Div()
