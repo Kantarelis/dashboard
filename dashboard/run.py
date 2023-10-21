@@ -19,7 +19,7 @@ from dashboard.callbacks.modals.stocks_portfolio import (
 from dashboard.callbacks.objects.stocks_box import stocks_box
 from dashboard.callbacks.utilities.init_page_clock import init_page_clock
 from dashboard.callbacks.utilities.local_data_paths_constructor import local_data_paths_constructor
-from dashboard.database.functions.generic import create_connection
+from dashboard.database.functions.generic import configure_environment, create_connection
 from dashboard.engine.stocks_data_feed import StocksDataFeed
 from dashboard.interfaces.dashboard_main import dashboard_main
 from dashboard.interfaces.init_page import init_page
@@ -33,6 +33,7 @@ class Dashboard:
         self.app: dash.Dash = dash.Dash(external_stylesheets=[dbc.themes.DARKLY])
         self.root_path: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
         self.lock: LockType = Lock()
+        configure_environment()
         create_connection(DATABASE_PATH)
 
     def run(self):

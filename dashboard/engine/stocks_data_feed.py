@@ -2,9 +2,9 @@ import datetime
 from multiprocessing import Process
 from multiprocessing.synchronize import Lock as LockType
 
-from dashboard.database.functions.generic import run_query
+from dashboard.database.functions.generic import get_api_key, run_query
 from dashboard.engine.finnhubwrapper import FinnhubWrapper
-from dashboard.settings import API_KEY, DATA_FEED_WINDOW, DATABASE_PATH, TIME_INTERVAL
+from dashboard.settings import DATA_FEED_WINDOW, DATABASE_PATH, TIME_INTERVAL
 
 CREATION_QUERY = """
                  CREATE TABLE IF NOT EXISTS saved_stocks
@@ -34,7 +34,7 @@ class StocksDataFeed(Process):
         self.lock = lock
 
     def run(self):
-        self.fin = FinnhubWrapper(API_KEY)
+        self.fin = FinnhubWrapper(get_api_key())
 
         self.loop = True
         while self.loop:
@@ -51,7 +51,6 @@ class StocksDataFeed(Process):
             dummy_integer: int = 0
             for stock, pid in zip(stocks, pids):
                 dummy_integer += 1
-                print(f"Process running: {dummy_integer}")
                 stock_candle = self.fin.stock_candles(stock, TIME_INTERVAL, start_date, end_date)
                 if stock_candle["s"] == "ok":
                     for record in range(len(stock_candle["c"])):

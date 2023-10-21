@@ -1,6 +1,22 @@
 import logging
+import os
 import sqlite3
 from sqlite3 import Error
+
+from dotenv import load_dotenv
+
+
+def configure_environment() -> None:
+    load_dotenv()
+
+
+def get_api_key() -> str:
+    api_key = os.getenv("API_KEY")
+    if api_key is None:
+        error_message: str = "API_KEY is not setup in the running environment. Please check README.md to see how to "
+        error_message += "setup API_KEY in you environment."
+        raise Exception(error_message)
+    return api_key
 
 
 def create_connection(db_file: str) -> None:

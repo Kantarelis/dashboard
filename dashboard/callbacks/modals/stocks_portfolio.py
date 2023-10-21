@@ -5,9 +5,9 @@ from dash import Dash, callback_context, dcc
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
-from dashboard.database.functions.generic import run_query
+from dashboard.database.functions.generic import get_api_key, run_query
 from dashboard.engine.finnhubwrapper import FinnhubWrapper
-from dashboard.settings import API_KEY, DATABASE_PATH
+from dashboard.settings import DATABASE_PATH
 
 SELECT_QUERY = "SELECT symbol FROM saved_stocks"
 CREATION_QUERY = """
@@ -50,7 +50,7 @@ def right_body_of_stocks_portfolio_modal(app: Dash):
         potentially can select from finhub sources."""
         stocks: List[dict] = []
         if callback_context.triggered_id == "stocks_portfolio_button":
-            fin = FinnhubWrapper(API_KEY)
+            fin = FinnhubWrapper(get_api_key())
             all_stocks = fin.stocks_to_list()
             all_stocks_symbols = [stock["symbol"] for stock in all_stocks]
             stocks = [{"label": symbol, "value": symbol} for symbol in all_stocks_symbols]
@@ -127,7 +127,7 @@ def add_stocks_to_database(app: Dash, lock: LockType):
         saved_stocks: list = []
 
         if callback_context.triggered_id == "add_stocks_to_portfolio":
-            fin = FinnhubWrapper(API_KEY)
+            fin = FinnhubWrapper(get_api_key())
             for symbol in selected_stocks:
                 cp = fin.company_profile(symbol)
                 stock = f"('{symbol}', 'None', 'None', 'None', "

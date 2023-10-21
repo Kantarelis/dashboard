@@ -4,3 +4,4 @@ dash-loading-spinners==1.0.0
 PyQt5==5.15.9
 PyQtWebEngine==5.15.6
 finnhub-python==2.4.18
+python-dotenv==1.0.0
