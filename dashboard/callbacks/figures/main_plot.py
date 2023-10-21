@@ -1,6 +1,6 @@
 import re
 from multiprocessing.synchronize import Lock as LockType
-from typing import Any, Tuple, Union
+from typing import Optional, Tuple, Type, Union
 
 import plotly.graph_objs as go
 from dash import ALL, Dash, Input, Output, callback_context, no_update
@@ -19,22 +19,22 @@ def stock_candles_plot(app: Dash, root_path: str, lock: LockType):
         prevent_initial_call=True,
     )
     def stock_candles_plot_function(
-        stocks_n_clicks: list, n_intervals: int, previous_stock: str
-    ) -> Tuple[Union[go.Figure, Any], Union[str, Any]]:
+        stocks_n_clicks: list, n_intervals: Optional[int], previous_stock: str
+    ) -> Tuple[Union[go.Figure, Type], Union[str, Type]]:
         """Callback for Updating Main Graph.
 
         Args:
             stocks_n_clicks (list): A list containing integers; the numbers of clicks performed of every stock symbol
                                     button.
-            n_intervals (int): An integer counter measuring how many dt - intervals of time passed. The dt is defined in
-                               /dashboard.settings.py and named as 'MAIN_GRAPH_REFRESH_RATE' constant.
+            n_intervals (Optional[int]): An integer counter measuring how many dt - intervals of time passed. The dt is
+                                    defined in /dashboard.settings.py and named as 'MAIN_GRAPH_REFRESH_RATE' constant.
             previous_stock (str): This is the last stock selected by the user or with automatic selection (when you
                                   start the application for the first time, it automatically selects the first saved
                                   stock, if any in local database.)
 
         Returns:
-            figure: Union[go.Figure, Any]: Returns either an updated figure or a dash command to not update the figure.
-            previous_stock: Union[str, Any]: Returns either None, in case no saved stock exists in local
+            figure: Union[go.Figure, Type]: Returns either an updated figure or a dash command to not update the figure.
+            previous_stock: Union[str, Type]: Returns either None, in case no saved stock exists in local
                                   database, str to save last used stock in a dcc.Store object, or a dash command to not
                                   update the last used stock.
 

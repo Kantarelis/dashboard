@@ -2,12 +2,13 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html
 
 from dashboard.interfaces.navbar import navbar
+from dashboard.settings import N_INTEGRALS_IN_INIT_PAGE, TIME_INTEGRAL_OF_IN_INIT_PAGE
 
 # Define Body of the page
 body = dbc.Container(
     [
         html.H5("This Is The Init Page", style={"textAlign": "center"}),
-        dcc.Interval(id="init_page_clock", interval=1 * 1000, n_intervals=0),
+        dcc.Interval(id="init_page_clock", interval=TIME_INTEGRAL_OF_IN_INIT_PAGE * N_INTEGRALS_IN_INIT_PAGE),
     ],
     style={
         "display": "flex",

@@ -4,7 +4,7 @@ from dash import dcc, html
 from dashboard.interfaces.containers.modals.stocks_portfolio import stocks_portfolio
 from dashboard.interfaces.containers.stock_figure import stock_figure
 from dashboard.interfaces.navbar import navbar
-from dashboard.settings import MAIN_GRAPH_REFRESH_RATE
+from dashboard.settings import GRAPH_REFRESH_RATE, TIME_INTEGRAL_OF_GRAPH_REFRESH_RATE
 
 # Body of the main page
 body = dbc.Container(
@@ -51,7 +51,6 @@ body = dbc.Container(
                                         "flex-flow": "column",
                                     },
                                 ),
-                                # dcc.Interval(id="refresh_stocks_box", interval=1 * 1000, n_intervals=0),
                             ],
                             style={
                                 "display": "flex",
@@ -70,7 +69,9 @@ body = dbc.Container(
                     [
                         html.Div(stock_figure),
                         dcc.Store(id="last_stock_selected"),
-                        dcc.Interval(id="refresh_figure", interval=MAIN_GRAPH_REFRESH_RATE, n_intervals=0),
+                        dcc.Interval(
+                            id="refresh_figure", interval=TIME_INTEGRAL_OF_GRAPH_REFRESH_RATE * GRAPH_REFRESH_RATE
+                        ),
                     ],
                     style={
                         "display": "flex",

@@ -24,7 +24,7 @@ from dashboard.engine.stocks_data_feed import StocksDataFeed
 from dashboard.interfaces.dashboard_main import dashboard_main
 from dashboard.interfaces.init_page import init_page
 from dashboard.pyqt5_browser.browser import BrowserApp
-from dashboard.settings import DATABASE_PATH
+from dashboard.settings import DATABASE_PATH, INIT_PAGE_PATH, MAIN_PAGE_PATH
 
 
 class Dashboard:
@@ -58,17 +58,19 @@ class Dashboard:
         @self.app.callback(Output("page-content", "children"), [Input("url", "pathname")])
         def display_page(pathname: str):
             logging.debug(f"The pathname is changes into: {pathname}.")
-            if pathname == "/":
+            if pathname == INIT_PAGE_PATH:
                 # ======================================= Clear Auto Generated Data ====================================
                 # ======================================================================================================
                 logging.debug(f"The pathname '{pathname}' is matched with a server-page.")
                 return init_page
-            elif pathname == "/dashboard_main":
+            elif pathname == MAIN_PAGE_PATH:
                 logging.debug(f"The pathname '{pathname}' is matched with a server-page.")
                 return dashboard_main
             else:
-                logging.error("Pathname Error")
-                raise Exception("Pathname Error")
+                logging.error(f"Pathname Error: This path {pathname} does not correspond to any know application path.")
+                raise Exception(
+                    f"Pathname Error: This path {pathname} does not correspond to any know application path."
+                )
 
         # ==============================================================================================================
         # ========================================= Utilities Callbacks ================================================
