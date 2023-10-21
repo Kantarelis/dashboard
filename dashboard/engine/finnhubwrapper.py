@@ -7,6 +7,8 @@ from dashboard.settings import COMPANY_NEWS_DATE_FORMAT, SELECTED_COUNTRY
 
 
 class FinnhubWrapper:
+    finnhub_client: finnhub.Client
+
     def __init__(self, api_key: str):
         self.finnhub_client = finnhub.Client(api_key=api_key)
 
