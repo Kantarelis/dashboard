@@ -3,7 +3,7 @@ import sqlite3
 from sqlite3 import Error
 
 
-def create_connection(db_file):
+def create_connection(db_file: str) -> None:
     """create a database connection to a SQLite database"""
     logging.debug("Trying to connect to database")
     conn = None
