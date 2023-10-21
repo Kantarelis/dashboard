@@ -18,9 +18,7 @@ from dashboard.pyqt5_browser.settings import (
 
 
 class ApplicationThread(QtCore.QThread):
-    """
-    ApplicationThread of QtCore.QThread.
-    """
+    """ApplicationThread of QtCore.QThread."""
 
     def __init__(self, application: Dash, port: int = DEFAULT_PORT):
         super(ApplicationThread, self).__init__()
@@ -36,9 +34,7 @@ class ApplicationThread(QtCore.QThread):
 
 
 class WebPage(QtWebEngineWidgets.QWebEnginePage):
-    """
-    WebPage.
-    """
+    """WebPage."""
 
     def __init__(self, root_url: str):
         super(WebPage, self).__init__()
@@ -49,6 +45,8 @@ class WebPage(QtWebEngineWidgets.QWebEnginePage):
 
 
 class BrowserApp:
+    """The main browser app."""
+
     server_thread: ApplicationThread
 
     def __init__(
