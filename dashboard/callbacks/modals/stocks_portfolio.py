@@ -1,5 +1,5 @@
 from multiprocessing.synchronize import Lock as LockType
-from typing import Tuple
+from typing import Tuple, List
 
 from dash import Dash, callback_context, dcc
 from dash.dependencies import Input, Output, State
@@ -29,6 +29,7 @@ def stocks_portfolio_modal(app: Dash):
         State("stocks_portfolio_modal", "is_open"),
     )
     def stocks_portfolio_modal_function(n_clicks_open: int, n_clicks_close: int, open_modal: bool) -> bool:
+        """Callback function for opening-closing stocks portfolio modal."""
         if (
             callback_context.triggered_id == "stocks_portfolio_button"
             or callback_context.triggered_id == "close_portfolio"
@@ -45,7 +46,9 @@ def right_body_of_stocks_portfolio_modal(app: Dash):
         ],
     )
     def right_body_of_stocks_portfolio_modal_function(n_clicks: int) -> dcc.Dropdown:
-        stocks: list = []
+        """Callback function for creating a dynamic dropdown menu with all available stocks a user
+        potentially can select from finhub sources."""
+        stocks: List[dict] = []
         if callback_context.triggered_id == "stocks_portfolio_button":
             fin = FinnhubWrapper(API_KEY)
             all_stocks = fin.stocks_to_list()
@@ -80,6 +83,7 @@ def left_body_of_stocks_portfolio_modal(app: Dash, lock: LockType):
         saved_stocks_add_list: list,
         saved_stocks_remove_list: list,
     ) -> dcc.Dropdown:
+        """Callback function for creating a dynamic dropdown menu with all saved stock in local database."""
         results: list = []
         saved_stocks: list = []
         if callback_context.triggered_id == "stocks_portfolio_button":
@@ -118,6 +122,7 @@ def add_stocks_to_database(app: Dash, lock: LockType):
         prevent_initial_call=True,
     )
     def add_stocks_to_database_function(n_clicks: int, selected_stocks: list) -> Tuple[list, list]:
+        """Callback function that saves multiple selected stock, user selected, in local database."""
         results: list = []
         saved_stocks: list = []
 
@@ -169,6 +174,9 @@ def remove_stocks_from_database(app: Dash, lock: LockType):
         prevent_initial_call=True,
     )
     def remove_stocks_from_database_function(n_clicks: int, selected_stocks: list) -> Tuple[list, list]:
+        """Callback function for removing selected stocks, user selected, from local database alongside with their
+        corresponding data.
+        """
         # Restart Selected stocks values
         results: list = []
         saved_stocks: list = []

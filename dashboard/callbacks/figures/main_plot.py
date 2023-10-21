@@ -51,14 +51,10 @@ def stock_candles_plot(app: Dash, root_path: str, lock: LockType):
             for n_click in range(len(callback_context.inputs_list[0]))
         ]
 
-        # If previous stock in saved stocks update the figure (this is used for )
+        # If there is at least one saved stock in local database:
         if saved_stocks:
-            # If previous stock exist, update only graph to receive the latest update on this stock.
-            if previous_stock in saved_stocks:
-                return stock_candles_figure(root_path, lock, previous_stock), no_update
-            else:
-                # The previous_stock is deleted from the database. Update figure and saved stock with the first saved
-                # stock from database.
+            # If previous stock exist is deleted from the local database -> update figure and saved stock with the
+            # first saved stock from database.
+            if previous_stock not in saved_stocks:
                 return stock_candles_figure(root_path, lock, saved_stocks[0]), saved_stocks[0]
-        # if no stocks found in database update nothing.
         return no_update, no_update
