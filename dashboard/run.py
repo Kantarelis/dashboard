@@ -1,4 +1,3 @@
-import logging
 import os
 from multiprocessing import Lock
 from multiprocessing.synchronize import Lock as LockType
@@ -6,7 +5,6 @@ from multiprocessing.synchronize import Lock as LockType
 import dash
 import dash_bootstrap_components as dbc
 from dash import dcc, html
-from dash.dependencies import Input, Output
 
 from dashboard.callbacks.figures.main_plot import stock_candles_plot
 from dashboard.callbacks.modals.stocks_portfolio import (
@@ -19,19 +17,18 @@ from dashboard.callbacks.modals.stocks_portfolio import (
 from dashboard.callbacks.objects.stocks_box import stocks_box
 from dashboard.callbacks.utilities.init_page_clock import init_page_clock
 from dashboard.callbacks.utilities.local_data_paths_constructor import local_data_paths_constructor
+from dashboard.callbacks.utilities.page_navigation import navigation_callback
 from dashboard.database.functions.generic import configure_environment, create_connection
 from dashboard.engine.stocks_data_feed import StocksDataFeed
-from dashboard.interfaces.dashboard_main import dashboard_main
-from dashboard.interfaces.init_page import init_page
 from dashboard.pyqt5_browser.browser import BrowserApp
-from dashboard.settings import DATABASE_PATH, INIT_PAGE_PATH, MAIN_PAGE_PATH
+from dashboard.settings import DATABASE_PATH
 
 
 class Dashboard:
     def __init__(self, app_title: str = "Dashboard"):
         self.app_title = app_title
         self.app: dash.Dash = dash.Dash(external_stylesheets=[dbc.themes.DARKLY])
-        self.root_path: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
+        self.root_path: str = os.getcwd()
         self.lock: LockType = Lock()
         configure_environment()
         create_connection(DATABASE_PATH)
@@ -56,22 +53,7 @@ class Dashboard:
         # ==============================================================================================================
         # ==================================== Pages Navigation Callback ===============================================
         # ==============================================================================================================
-        @self.app.callback(Output("page-content", "children"), [Input("url", "pathname")])
-        def display_page(pathname: str):
-            logging.debug(f"The pathname is changes into: {pathname}.")
-            if pathname == INIT_PAGE_PATH:
-                # ======================================= Clear Auto Generated Data ====================================
-                # ======================================================================================================
-                logging.debug(f"The pathname '{pathname}' is matched with a server-page.")
-                return init_page
-            elif pathname == MAIN_PAGE_PATH:
-                logging.debug(f"The pathname '{pathname}' is matched with a server-page.")
-                return dashboard_main
-            else:
-                logging.error(f"Pathname Error: This path {pathname} does not correspond to any know application path.")
-                raise Exception(
-                    f"Pathname Error: This path {pathname} does not correspond to any know application path."
-                )
+        navigation_callback(self.app)
 
         # ==============================================================================================================
         # ========================================= Utilities Callbacks ================================================
