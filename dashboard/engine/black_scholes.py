@@ -1,12 +1,12 @@
 import numpy as np
-
+import logging
 from dashboard.settings import FULL_YEAR_DAYS, GREAT_MINUS_NUMBER
+from dashboard.engine.portfolio_objects import Stock
 
 
-class BlackScholes:
-    def __init__(self, risk_free_interest_rate: float, volatility: float, target_days: int) -> None:
-        self.rf_r = risk_free_interest_rate
-        self.volatility = volatility
+class BlackScholes(Stock):
+    def __init__(self, target_days: int, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
         self.target_days = target_days
 
     def _integral_formula(self, x_axis: np.ndarray) -> np.ndarray:
@@ -18,6 +18,11 @@ class BlackScholes:
         return np.trapz(y_axis)
 
     def solution(self, stock_price: float, strike_price: float) -> float:
+        if self.volatility is None:
+            error_message = f"Please provide a value for stock volatility for stock: {self.symbol}"
+            logging.error(error_message)
+            raise Exception(error_message)
+
         d_one = (
             np.log(stock_price / strike_price)
             + (self.rf_r + 0.5 * (self.volatility**2)) * (self.target_days / FULL_YEAR_DAYS)

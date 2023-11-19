@@ -1,0 +1,1 @@
+STD_SMALL_RANGE = 4
