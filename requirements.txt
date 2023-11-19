@@ -6,3 +6,4 @@ PyQtWebEngine==5.15.6
 finnhub-python==2.4.18
 python-dotenv==1.0.0
 dash-extensions==1.0.4
+numpy==1.26.2

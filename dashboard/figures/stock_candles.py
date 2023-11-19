@@ -3,7 +3,7 @@ import os
 from multiprocessing.synchronize import Lock as LockType
 
 import plotly.graph_objects as go
-
+from typing import Literal
 from dashboard.database.functions.generic import run_query
 from dashboard.figures.empty_plot import empty_plot
 from dashboard.settings import DATABASE_PATH
@@ -15,7 +15,9 @@ CREATION_STOCKS_DATA_FEED_QUERY = """
                  """
 
 
-def stock_candles_figure(root_path: str, lock: LockType, stock_symbol: str) -> go.Figure:
+def stock_candles_figure(
+    root_path: str, lock: LockType, stock_symbol: str, mode: Literal["all", "candlesticks", "close_line"]
+) -> go.Figure:
     # Gather results of selected stock.
     get_candle_stock_data = f"""
                 SELECT timestamp, open, high, low, close
@@ -38,17 +40,41 @@ def stock_candles_figure(root_path: str, lock: LockType, stock_symbol: str) -> g
             close.append(result[4])
 
         timestamps = [datetime.datetime.fromtimestamp(timestamp) for timestamp in timestamps]
-        fig = go.Figure(
-            data=[
+        fig = go.Figure()
+
+        if mode in ["all", "candlesticks"]:
+            fig.add_trace(
                 go.Candlestick(
                     x=timestamps,
                     open=open,
                     high=high,
                     low=low,
                     close=close,
+                    name="Candlestick plot",
                 )
-            ]
+            )
+        if mode in ["all", "close_line"]:
+            fig.add_trace(
+                go.Scatter(
+                    x=timestamps,
+                    y=close,
+                    mode="lines",
+                    name="Closing Price",
+                    line=dict(color="orange", width=2.75),
+                    connectgaps=True,
+                )
+            )
+
+        fig.update_layout(
+            title=dict(text=f"{stock_symbol} analysis.", x=0.45),
+            xaxis_title="Datetime",
+            yaxis_title="Price",
+            font=dict(family="Roboto", size=18, color="white"),
+            paper_bgcolor="rgba(0,0,0,0)",
         )
+
+        # Space between y axis and plot
+        fig.update_yaxes(ticksuffix="   ")
         return fig
     # Else return an empty data plotly figure Candlestick plot.
     return empty_plot()
