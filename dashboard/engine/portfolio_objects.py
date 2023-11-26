@@ -1,13 +1,15 @@
-import os
-import logging
 import datetime
+import logging
+import os
+from typing import List, Optional
+
 import numpy as np
-from typing import Optional, List
+
+from dashboard.database.functions.generic import run_query
+from dashboard.engine.settings import DEFAULT_ANALYSIS_DAYS, DEFAULT_PRICE_GAIN, STD_SMALL_RANGE
 
 # from dashboard.engine.black_scholes import BlackScholes
 from dashboard.settings import DATABASE_PATH, FULL_YEAR_DAYS, GREAT_MINUS_NUMBER
-from dashboard.engine.settings import STD_SMALL_RANGE, DEFAULT_PRICE_GAIN, DEFAULT_ANALYSIS_DAYS
-from dashboard.database.functions.generic import run_query
 
 CREATION_STOCKS_DATA_FEED_QUERY = """
                  CREATE TABLE IF NOT EXISTS stocks_data_feed

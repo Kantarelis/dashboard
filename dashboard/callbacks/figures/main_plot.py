@@ -1,6 +1,6 @@
 import re
 from multiprocessing.synchronize import Lock as LockType
-from typing import Optional, Tuple, Type, Union, Literal
+from typing import Literal, Optional, Tuple, Type, Union
 
 import plotly.graph_objs as go
 from dash import ALL, Dash, Input, Output, callback_context, no_update

@@ -1,4 +1,4 @@
-from typing import Optional, Literal, Tuple
+from typing import Literal, Optional, Tuple
 
 
 def define_mode_and_previous_mode(

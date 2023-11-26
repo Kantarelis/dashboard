@@ -1,9 +1,10 @@
 import datetime
 import os
 from multiprocessing.synchronize import Lock as LockType
+from typing import Literal
 
 import plotly.graph_objects as go
-from typing import Literal
+
 from dashboard.database.functions.generic import run_query
 from dashboard.figures.empty_plot import empty_plot
 from dashboard.settings import DATABASE_PATH

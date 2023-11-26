@@ -1,10 +1,11 @@
 import os
 from multiprocessing.synchronize import Lock as LockType
-from dash import Dash, Input, Output, html, callback_context
-from dashboard.settings import DATABASE_PATH
-from dashboard.database.functions.generic import run_query
-from dashboard.engine.portfolio_objects import Stock, Portfolio
 
+from dash import Dash, Input, Output, callback_context, html
+
+from dashboard.database.functions.generic import run_query
+from dashboard.engine.portfolio_objects import Portfolio, Stock
+from dashboard.settings import DATABASE_PATH
 
 CREATION_QUERY = """
                  CREATE TABLE IF NOT EXISTS saved_stocks
