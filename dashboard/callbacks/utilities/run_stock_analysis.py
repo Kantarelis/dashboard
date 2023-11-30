@@ -38,7 +38,13 @@ def analyse_stocks(app: Dash, root_path: str, lock: LockType):
             portfolio = Portfolio(list_of_stocks)
             stocks_to_sell = portfolio.check_stocks_for_sell()
 
-        if stocks_to_sell:
-            return html.Div([html.H5(stock.symbol) for stock in stocks_to_sell])
-        else:
-            return html.Div([html.H5("Keep them all!")])
+            if stocks_to_sell:
+                return html.Div(
+                    [
+                        html.H5("Sell these stocks:"),
+                        html.Ul(children=[html.Li(stock.symbol) for stock in stocks_to_sell]),
+                    ]
+                )
+            else:
+                return html.Div([html.H5("Keep them all!")])
+        return html.Div([html.H5("No analysis yet...")])

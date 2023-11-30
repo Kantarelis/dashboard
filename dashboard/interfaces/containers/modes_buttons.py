@@ -46,27 +46,6 @@ modes_buttons = html.Div(
                 "justify-content": "flex-end",
             },
         ),
-        html.Div(
-            [
-                dbc.Button(
-                    "Analyse Stocks",
-                    id="analyse_stocks",
-                    n_clicks=0,
-                    style={
-                        "display": "flex",
-                        "flex-flow": "row",
-                        "align-items": "center",
-                        "width": "auto",
-                    },
-                ),
-                html.Div(id="analysis_result"),
-            ],
-            style={
-                "display": "flex",
-                "flex-flow": "row",
-                "justify-content": "flex-end",
-            },
-        ),
     ],
     style={
         "display": "flex",

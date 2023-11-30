@@ -1,6 +1,7 @@
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 
+from dashboard.interfaces.containers.analysis_box import analysis_box
 from dashboard.interfaces.containers.modals.stocks_portfolio import stocks_portfolio
 from dashboard.interfaces.containers.modes_buttons import modes_buttons
 from dashboard.interfaces.containers.stock_figure import stock_figure
@@ -79,6 +80,15 @@ body = dbc.Container(
                                 ),
                             ]
                         ),
+                    ],
+                    style={
+                        "display": "flex",
+                        "flex-flow": "column",
+                    },
+                ),
+                dbc.Col(
+                    [
+                        html.Div(analysis_box),
                     ],
                     style={
                         "display": "flex",

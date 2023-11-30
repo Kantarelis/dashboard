@@ -7,3 +7,6 @@ __pycache__
 workspace-requirements.txt
 dashboard/database/dashboard_database.db
 dashboard.egg-info
+htmlcov
+.pytest_cache
+.coverage

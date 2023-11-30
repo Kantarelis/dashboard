@@ -6,6 +6,7 @@ from typing import List, Optional
 import numpy as np
 
 from dashboard.database.functions.generic import run_query
+from dashboard.engine.functions.mathematics import std_calculator
 from dashboard.engine.settings import DEFAULT_ANALYSIS_DAYS, DEFAULT_PRICE_GAIN, STD_SMALL_RANGE
 
 # from dashboard.engine.black_scholes import BlackScholes
@@ -31,7 +32,7 @@ class Stock:
         self.lock = lock
         self.symbol = symbol
         self.prices = self._get_stock_prices()
-        self.stock_last_price = self.prices[-1]
+        self.last_price = self.prices[-1]
         self.volatility = volatility
         if self.volatility is None:
             self.volatility = self._calculate_volatility()
@@ -69,28 +70,10 @@ class Stock:
             return 0.0
         return self.prices.mean()
 
-    def _std_calculator(self, prices: np.ndarray) -> np.ndarray:
-        """This std calculation corresponds to a moving window std calculation with window equal to 4 bins."""
-        if list(prices) == []:
-            error_message = "Prices is an empty numpy array. Hence std calculator cannot calculate standard deviation."
-            logging.error(error_message)
-            raise Exception(error_message)
-        prices_matrix = np.array(
-            [
-                prices,
-                np.append(prices[1:], [np.NaN]),
-                np.append(prices[2:], [np.NaN, np.NaN]),
-                np.append(prices[3:], [np.NaN, np.NaN, np.NaN]),
-            ]
-        )
-        std = np.std(prices_matrix, axis=0)
-        std = np.append(std[:-STD_SMALL_RANGE], [0.0, 0.0, 0.0, 0.0])
-        return std.mean()
-
     def _calculate_volatility(self):
         if len(self.prices) < STD_SMALL_RANGE:
             return self.prices.mean()
-        return self._std_calculator(self.prices)
+        return std_calculator(self.prices)
 
 
 class BlackScholes:
@@ -157,9 +140,9 @@ class Portfolio:
     def check_stocks_for_sell(self, analysis_days: int = DEFAULT_ANALYSIS_DAYS):
         stocks_to_sell: List[Stock] = []
         for stock in self.stocks:
-            strike_price = (1.0 + self.price_gain) * stock.stock_last_price
+            strike_price = (1.0 + self.price_gain) * stock.last_price
             bs = BlackScholes(stock, analysis_days)
-            if (bs.call_solution(stock.stock_last_price, strike_price) < 0) or stock.rf_r == 0:
+            if (bs.call_solution(stock.last_price, strike_price) < 0) or stock.rf_r == 0:
                 if stock not in stocks_to_sell:
                     stocks_to_sell.append(stock)
         return stocks_to_sell

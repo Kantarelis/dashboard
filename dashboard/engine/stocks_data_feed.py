@@ -32,11 +32,11 @@ class StocksDataFeed(Process):
     def __init__(self, lock: LockType, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.lock = lock
+        self.loop = True
 
     def run(self):
         self.fin = FinnhubWrapper(get_api_key())
 
-        self.loop = True
         while self.loop:
             start_date = datetime.datetime.now() - datetime.timedelta(days=DATA_FEED_WINDOW)
             end_date = datetime.datetime.now()
@@ -48,9 +48,7 @@ class StocksDataFeed(Process):
             stocks = [result[0] for result in results]
             pids = [result[1] for result in results]
 
-            dummy_integer: int = 0
             for stock, pid in zip(stocks, pids):
-                dummy_integer += 1
                 stock_candle = self.fin.stock_candles(stock, TIME_INTERVAL, start_date, end_date)
                 if stock_candle["s"] == "ok":
                     for record in range(len(stock_candle["c"])):

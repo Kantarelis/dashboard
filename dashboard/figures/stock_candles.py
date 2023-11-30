@@ -67,7 +67,7 @@ def stock_candles_figure(
             )
 
         fig.update_layout(
-            title=dict(text=f"{stock_symbol} analysis.", x=0.45),
+            title=dict(text=f"Analysis of: {stock_symbol} stock.", x=0.45),
             xaxis_title="Datetime",
             yaxis_title="Price",
             font=dict(family="Roboto", size=18, color="white"),

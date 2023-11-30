@@ -1,4 +1,5 @@
 import datetime
+import logging
 from typing import Union
 
 import finnhub
@@ -19,22 +20,53 @@ class FinnhubWrapper:
         return datetime.datetime.fromtimestamp(timestamp)
 
     def stock_candles(
-        self, stock: str, time_interval: Union[int, str], start_date: datetime.datetime, end_date: datetime.datetime
+        self,
+        stock_symbol: str,
+        time_interval: Union[int, str],
+        start_date: datetime.datetime,
+        end_date: datetime.datetime,
     ) -> dict:
         start_date_int = self.to_timestamp_integer(start_date)
         end_date_int = self.to_timestamp_integer(end_date)
-        return self.finnhub_client.stock_candles(stock, time_interval, start_date_int, end_date_int)
 
-    def company_news(self, stock: str, start_date: datetime.datetime, end_date: datetime.datetime) -> dict:
+        try:
+            results = self.finnhub_client.stock_candles(stock_symbol, time_interval, start_date_int, end_date_int)
+        except Exception as exc:
+            logging.error(exc)
+            raise Exception(exc)
+        return results
+
+    def company_news(self, stock_symbol: str, start_date: datetime.datetime, end_date: datetime.datetime) -> dict:
         start_date_str = start_date.strftime(COMPANY_NEWS_DATE_FORMAT)
         end_date_str = end_date.strftime(COMPANY_NEWS_DATE_FORMAT)
-        return self.finnhub_client.press_releases(stock, _from=start_date_str, to=end_date_str)
 
-    def market_news(self, stock: str, min_id: int = 0) -> dict:
-        return self.finnhub_client.general_news(stock, min_id=min_id)
+        try:
+            company_news = self.finnhub_client.press_releases(stock_symbol, _from=start_date_str, to=end_date_str)
+        except Exception as exc:
+            logging.error(exc)
+            raise Exception(exc)
+        return company_news
 
-    def company_profile(self, stock: str) -> dict:
-        return self.finnhub_client.company_profile2(symbol=stock)
+    def market_news(self, stock_symbol: str, min_id: int = 0) -> dict:
+        try:
+            news = self.finnhub_client.general_news(stock_symbol, min_id=min_id)
+        except Exception as exc:
+            logging.error(exc)
+            raise Exception(exc)
+        return news
+
+    def company_profile(self, stock_symbol: str) -> dict:
+        try:
+            profile = self.finnhub_client.company_profile2(symbol=stock_symbol)
+        except Exception as exc:
+            logging.error(exc)
+            raise Exception(exc)
+        return profile
 
     def stocks_to_list(self) -> dict:
-        return self.finnhub_client.stock_symbols(SELECTED_COUNTRY)
+        try:
+            stocks_list = self.finnhub_client.stock_symbols(SELECTED_COUNTRY)
+        except Exception as exc:
+            logging.error(exc)
+            raise Exception(exc)
+        return stocks_list
