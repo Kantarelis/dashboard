@@ -14,3 +14,6 @@ format:
 
 test:
 	python -m pytest --cov .
+
+local_test:
+	coverage run -m pytest && coverage html && open htmlcov/index.html

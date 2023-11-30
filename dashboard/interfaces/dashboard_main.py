@@ -1,7 +1,9 @@
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 
+from dashboard.interfaces.containers.analysis_box import analysis_box
 from dashboard.interfaces.containers.modals.stocks_portfolio import stocks_portfolio
+from dashboard.interfaces.containers.modes_buttons import modes_buttons
 from dashboard.interfaces.containers.stock_figure import stock_figure
 from dashboard.interfaces.navbar import navbar
 from dashboard.settings import GRAPH_REFRESH_RATE, TIME_INTEGRAL_OF_GRAPH_REFRESH_RATE
@@ -67,11 +69,26 @@ body = dbc.Container(
                 ),
                 dbc.Col(
                     [
-                        html.Div(stock_figure),
-                        dcc.Store(id="last_stock_selected"),
-                        dcc.Interval(
-                            id="refresh_figure", interval=TIME_INTEGRAL_OF_GRAPH_REFRESH_RATE * GRAPH_REFRESH_RATE
+                        dbc.Row([modes_buttons]),
+                        dbc.Row(
+                            [
+                                html.Div(stock_figure),
+                                dcc.Store(id="last_stock_selected"),
+                                dcc.Interval(
+                                    id="refresh_figure",
+                                    interval=TIME_INTEGRAL_OF_GRAPH_REFRESH_RATE * GRAPH_REFRESH_RATE,
+                                ),
+                            ]
                         ),
+                    ],
+                    style={
+                        "display": "flex",
+                        "flex-flow": "column",
+                    },
+                ),
+                dbc.Col(
+                    [
+                        html.Div(analysis_box),
                     ],
                     style={
                         "display": "flex",

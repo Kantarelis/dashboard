@@ -18,6 +18,7 @@ from dashboard.callbacks.objects.stocks_box import stocks_box
 from dashboard.callbacks.utilities.init_page_clock import init_page_clock
 from dashboard.callbacks.utilities.local_data_paths_constructor import local_data_paths_constructor
 from dashboard.callbacks.utilities.page_navigation import navigation_callback
+from dashboard.callbacks.utilities.run_stock_analysis import analyse_stocks
 from dashboard.database.functions.generic import configure_environment, create_connection
 from dashboard.engine.stocks_data_feed import StocksDataFeed
 from dashboard.pyqt5_browser.browser import BrowserApp
@@ -59,6 +60,7 @@ class Dashboard:
         # ========================================= Utilities Callbacks ================================================
         # ==============================================================================================================
         init_page_clock(self.app)
+        analyse_stocks(self.app, self.root_path, self.lock)
 
         # ========================================= Object Callbacks ===================================================
         # ==============================================================================================================

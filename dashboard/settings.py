@@ -18,3 +18,8 @@ TIME_INTEGRAL_OF_IN_INIT_PAGE: int = 1000  # Milliseconds
 N_INTEGRALS_IN_INIT_PAGE: int = 2
 TIME_INTEGRAL_OF_GRAPH_REFRESH_RATE: int = 1000  # Milliseconds
 GRAPH_REFRESH_RATE: int = 5
+
+
+# Settings for black-scholes solution
+FULL_YEAR_DAYS: int = 365
+GREAT_MINUS_NUMBER: float = -10000
