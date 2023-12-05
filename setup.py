@@ -5,7 +5,7 @@ with open("requirements.txt") as f:
 
 setup(
     name="dashboard",
-    version="0.0.1",
+    version="0.1.0",
     description="A dashboard demo.",
     long_description="README.md",
     url="https://github.com/Kantarelis/dashboard",
