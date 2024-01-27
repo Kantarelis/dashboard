@@ -4,6 +4,7 @@ from multiprocessing import Lock
 import dash
 import dash_bootstrap_components as dbc
 from dash import dcc, html
+from dotenv import load_dotenv
 
 from dashboard.callbacks.figures.main_plot import stock_candles_plot
 from dashboard.callbacks.modals.stocks_portfolio import (
@@ -18,7 +19,7 @@ from dashboard.callbacks.utilities.init_page_clock import init_page_clock
 from dashboard.callbacks.utilities.local_data_paths_constructor import local_data_paths_constructor
 from dashboard.callbacks.utilities.page_navigation import navigation_callback
 from dashboard.callbacks.utilities.run_stock_analysis import analyse_stocks
-from dashboard.database.functions.generic import configure_environment, create_connection
+from dashboard.database.functions.generic import create_connection
 from dashboard.engine.stocks_data_feed import StocksDataFeed
 from dashboard.pyqt5_browser.browser import BrowserApp
 from dashboard.settings import DATABASE_PATH
@@ -42,7 +43,8 @@ class Dashboard:
         self.app = dash.Dash(external_stylesheets=[dbc.themes.DARKLY])
         self.root_path = os.getcwd()
         self.lock = Lock()
-        configure_environment()
+        # Load environment
+        load_dotenv()
         create_connection(DATABASE_PATH)
 
     def run(self):

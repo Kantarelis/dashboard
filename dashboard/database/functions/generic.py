@@ -4,12 +4,6 @@ import sqlite3
 from sqlite3 import Error
 from typing import Optional
 
-from dotenv import load_dotenv
-
-
-def configure_environment() -> None:
-    load_dotenv()
-
 
 def get_api_key(api_key: Optional[str] = None) -> str:
     if api_key is None:
