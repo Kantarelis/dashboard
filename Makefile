@@ -17,3 +17,6 @@ test:
 
 local_test:
 	coverage run -m pytest && coverage html && open htmlcov/index.html
+
+install_requirements:
+	pip install -U -r requirements-dev.txt

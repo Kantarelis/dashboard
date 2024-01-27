@@ -7,10 +7,12 @@ from typing import Optional
 
 def get_api_key(api_key: Optional[str] = None) -> str:
     if api_key is None:
-        api_key = os.getenv("API_KEY")
+        api_key = os.getenv("FINNHUB_API_KEY")
     if api_key is None:
-        error_message: str = "API_KEY is not setup in the running environment neither provided by the user. Please "
-        error_message += "check README.md to see how to setup API_KEY in you environment."
+        error_message: str = (
+            "FINNHUB_API_KEY is not setup in the running environment neither provided by the user. Please "
+        )
+        error_message += "check README.md to see how to setup FINNHUB_API_KEY in you environment."
         raise Exception(error_message)
     return api_key
 
